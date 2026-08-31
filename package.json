@@ -1,0 +1,27 @@
+{
+  "name": "reclaim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Safe, explainable revenue recovery for failed payments",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "guardrail-report": "vitest run tests/guardrails.test.ts --reporter=json --outputFile=evaluation/guardrail-report.json",
+    "detect": "tsx src/decisions/run-detection.ts",
+    "verify-replay": "tsx src/decisions/verify-replay.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  },
+  "dependencies": {
+    "postgres": "3.4.7"
+  }
+}

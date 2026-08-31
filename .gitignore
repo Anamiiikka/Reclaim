@@ -39,3 +39,6 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Vitest JSON report — regenerable via npm run guardrail-report
+evaluation/guardrail-report.json
