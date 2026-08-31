@@ -1,0 +1,41 @@
+# Secrets — never commit. .env.example is the committed template.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build output
+dist/
+build/
+.vite/
+*.tsbuildinfo
+
+# Test / coverage
+coverage/
+.pytest_cache/
+.vitest/
+
+# Generated data — regenerable from a seed, keep the repo light.
+# Small committed samples live in data/samples/ (see below).
+data/generated/
+*.db
+*.sqlite
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
