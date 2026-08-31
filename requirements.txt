@@ -1,0 +1,9 @@
+# Pinned so CI and local runs agree. Reclaim's determinism claim is only as good
+# as the toolchain reproducing it.
+pytest==9.1.1
+psycopg[binary]==3.3.4
+
+# Phase 4 (model training + evaluation). Listed now so CI installs once.
+scikit-learn==1.7.2
+pandas==2.3.3
+numpy==2.3.4

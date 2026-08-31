@@ -1,5 +1,7 @@
 # Reclaim
 
+[![CI](https://github.com/Anamiiikka/Reclaim/actions/workflows/ci.yml/badge.svg)](https://github.com/Anamiiikka/Reclaim/actions/workflows/ci.yml)
+
 **Safe, explainable revenue recovery for failed payments.**
 
 Razorpay AI Buildathon — Track 3: AI Revenue Recovery.
@@ -54,6 +56,25 @@ Free, no KYC. A valid test key id starts with `rzp_test_`. Never put a live key 
 
 Reclaim runs against the **simulated** payment client by default (`PAYMENT_CLIENT=simulated`), so it works
 with no keys at all. Set `PAYMENT_CLIENT=razorpay` to exercise real test-mode Orders and Payment Links.
+
+## Tests
+
+```bash
+pytest data/ -v     # generator determinism, split integrity, response model
+npm test            # policy engine and guardrails (from Phase 2)
+```
+
+## CI
+
+Every push runs [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
+- **Secret scan** — blocks live keys, real test keys and Neon credentials, and verifies
+  `.gitignore` still refuses to stage `.env`. The scanner also tests *itself* against a planted
+  key each run, because a broken pattern that matches nothing would otherwise pass forever.
+- **Data** — the full pytest suite, plus a check that two separate processes given the same seed
+  produce byte-identical datasets, and that generated rows satisfy the DB constraints before any
+  load is attempted.
+- **Policy engine** — typecheck and tests (activates automatically once Phase 2 lands).
 
 ## Licence
 
