@@ -42,3 +42,6 @@ npm-debug.log*
 
 # Vitest JSON report — regenerable via npm run guardrail-report
 evaluation/guardrail-report.json
+
+# Exported for the Python harness; regenerate with npm run export-decisions
+data/generated/decisions.csv

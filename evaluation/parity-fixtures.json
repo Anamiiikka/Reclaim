@@ -1,0 +1,444 @@
+{
+  "cases": [
+    {
+      "input": {
+        "amountPaise": 826100,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 0,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.22208959059370606
+    },
+    {
+      "input": {
+        "amountPaise": 144200,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.5480344887488595
+    },
+    {
+      "input": {
+        "amountPaise": 3419000,
+        "priorSuccessCount": 3,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.26098429549047975
+    },
+    {
+      "input": {
+        "amountPaise": 666900,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 1,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 2,
+        "paymentMethod": "card"
+      },
+      "expected": 0.4829311738655898
+    },
+    {
+      "input": {
+        "amountPaise": 320600,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.2258337375361623
+    },
+    {
+      "input": {
+        "amountPaise": 857000,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 0,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.5294793594333722
+    },
+    {
+      "input": {
+        "amountPaise": 2967900,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 2,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.24409710969104653
+    },
+    {
+      "input": {
+        "amountPaise": 536300,
+        "priorSuccessCount": 5,
+        "priorFailureCount": 0,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.5736095761660562
+    },
+    {
+      "input": {
+        "amountPaise": 618600,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 2,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.28789733169859455
+    },
+    {
+      "input": {
+        "amountPaise": 742200,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 0,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 3,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.24040045594004789
+    },
+    {
+      "input": {
+        "amountPaise": 4724700,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.3862328977381558
+    },
+    {
+      "input": {
+        "amountPaise": 660500,
+        "priorSuccessCount": 8,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.36983633906402125
+    },
+    {
+      "input": {
+        "amountPaise": 98100,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.3235400619731136
+    },
+    {
+      "input": {
+        "amountPaise": 756200,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 0,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 2,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.20257924145942763
+    },
+    {
+      "input": {
+        "amountPaise": 955100,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 0,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.4604961940613787
+    },
+    {
+      "input": {
+        "amountPaise": 748800,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 3,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.44608257133114465
+    },
+    {
+      "input": {
+        "amountPaise": 764400,
+        "priorSuccessCount": 3,
+        "priorFailureCount": 2,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 3,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.42955513841788096
+    },
+    {
+      "input": {
+        "amountPaise": 695000,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 2,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.4153006907388827
+    },
+    {
+      "input": {
+        "amountPaise": 655300,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 1,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.24630465417119038
+    },
+    {
+      "input": {
+        "amountPaise": 603300,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.32040664120429974
+    },
+    {
+      "input": {
+        "amountPaise": 159900,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 1,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.5232441077326538
+    },
+    {
+      "input": {
+        "amountPaise": 112200,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 3,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.27245052895496535
+    },
+    {
+      "input": {
+        "amountPaise": 102100,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 2,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.2954972755185868
+    },
+    {
+      "input": {
+        "amountPaise": 139300,
+        "priorSuccessCount": 5,
+        "priorFailureCount": 4,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.19999626962486483
+    },
+    {
+      "input": {
+        "amountPaise": 329200,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 4,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 2,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.39379437681533624
+    },
+    {
+      "input": {
+        "amountPaise": 710100,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 0,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.534282846957307
+    },
+    {
+      "input": {
+        "amountPaise": 197800,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 2,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.5070640221855168
+    },
+    {
+      "input": {
+        "amountPaise": 892300,
+        "priorSuccessCount": 3,
+        "priorFailureCount": 0,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.2607816947995218
+    },
+    {
+      "input": {
+        "amountPaise": 134200,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 0,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.3331154865452694
+    },
+    {
+      "input": {
+        "amountPaise": 374400,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.2866400338491843
+    },
+    {
+      "input": {
+        "amountPaise": 145500,
+        "priorSuccessCount": 0,
+        "priorFailureCount": 1,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.2403192766270432
+    },
+    {
+      "input": {
+        "amountPaise": 8754800,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.23686538718446423
+    },
+    {
+      "input": {
+        "amountPaise": 192500,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 1,
+        "diagnosis": "TEMPORARY_BANK_OR_NETWORK_FAILURE",
+        "attemptNumber": 3,
+        "paymentMethod": "card"
+      },
+      "expected": 0.5192348849629601
+    },
+    {
+      "input": {
+        "amountPaise": 988300,
+        "priorSuccessCount": 3,
+        "priorFailureCount": 4,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 3,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.24359225787005886
+    },
+    {
+      "input": {
+        "amountPaise": 71400,
+        "priorSuccessCount": 3,
+        "priorFailureCount": 0,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 1,
+        "paymentMethod": "netbanking"
+      },
+      "expected": 0.37015581411674225
+    },
+    {
+      "input": {
+        "amountPaise": 8245000,
+        "priorSuccessCount": 5,
+        "priorFailureCount": 2,
+        "diagnosis": "EXPIRED_PAYMENT_METHOD",
+        "attemptNumber": 1,
+        "paymentMethod": "card"
+      },
+      "expected": 0.2832207212922163
+    },
+    {
+      "input": {
+        "amountPaise": 923000,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 1,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.23394368138462016
+    },
+    {
+      "input": {
+        "amountPaise": 2591000,
+        "priorSuccessCount": 5,
+        "priorFailureCount": 1,
+        "diagnosis": "USER_ABANDONMENT",
+        "attemptNumber": 1,
+        "paymentMethod": "upi"
+      },
+      "expected": 0.23837061644665378
+    },
+    {
+      "input": {
+        "amountPaise": 110900,
+        "priorSuccessCount": 1,
+        "priorFailureCount": 0,
+        "diagnosis": "INSUFFICIENT_FUNDS",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.31988249292192544
+    },
+    {
+      "input": {
+        "amountPaise": 88500,
+        "priorSuccessCount": 2,
+        "priorFailureCount": 0,
+        "diagnosis": "UNKNOWN",
+        "attemptNumber": 1,
+        "paymentMethod": "wallet"
+      },
+      "expected": 0.13022926684856648
+    }
+  ]
+}

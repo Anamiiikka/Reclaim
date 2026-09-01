@@ -23,6 +23,7 @@ import type { Sql } from 'postgres';
 import { recoveryExpiresAt } from './detect.js';
 import { decide } from './plan.js';
 import { diagnose } from './diagnose.js';
+import { scoreRecoveryProbability } from './score.js';
 import { evaluatePolicy } from '../policy/rules.js';
 import type { CaseSnapshot } from '../types.js';
 
@@ -137,7 +138,17 @@ function toSnapshot(row: CandidateRow, caseId: string, diagnosisResult: ReturnTy
     checkoutStage: row.checkout_stage,
     diagnosis: diagnosisResult.diagnosis,
     diagnosisConfidence: diagnosisResult.confidence,
-    recoveryProbability: null,
+    // Scored here so the planner's probability floor has something to compare
+    // against. The score informs WHICH action to take; it never decides whether
+    // contact is permitted -- that is the policy engine's alone.
+    recoveryProbability: scoreRecoveryProbability({
+      amountPaise: Number(row.amount_paise),
+      priorSuccessCount: row.prior_success_count,
+      priorFailureCount: row.prior_failure_count,
+      diagnosis: diagnosisResult.diagnosis,
+      attemptNumber: row.attempt_number,
+      paymentMethod: row.payment_method,
+    }),
     isOptedOut: row.is_opted_out,
     hasPaidSince: false,
     suspicionScore: 0,
