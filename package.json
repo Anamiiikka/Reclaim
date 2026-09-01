@@ -20,10 +20,13 @@
     "probe-rate-limit": "tsx src/payments/probe-rate-limit.ts",
     "verify-idempotency": "tsx src/payments/verify-idempotency.ts",
     "export-decisions": "tsx src/decisions/export-decisions.ts",
-    "eval": "tsx src/decisions/export-decisions.ts && python evaluation/evaluate.py && python evaluation/render_report.py > evaluation/RESULTS.md"
+    "eval": "tsx src/decisions/export-decisions.ts && python evaluation/evaluate.py && python evaluation/render_report.py > evaluation/RESULTS.md",
+    "api": "tsx src/api/server.ts",
+    "web": "cd web && npm run dev"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
+    "playwright": "^1.62.1",
     "tsx": "^4.20.6",
     "typescript": "5.9.3",
     "vitest": "3.2.7"

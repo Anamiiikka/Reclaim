@@ -215,6 +215,7 @@ async function main(): Promise<void> {
         status,
         diagnosis: diagnosisResult.diagnosis,
         diagnosis_confidence: diagnosisResult.confidence,
+        recovery_probability: snapshot.recoveryProbability,
         arm: snapshot.arm,
         split: row.split,
         detected_at: decisionTimeFor(new Date(row.attempted_at)),

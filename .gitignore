@@ -45,3 +45,7 @@ evaluation/guardrail-report.json
 
 # Exported for the Python harness; regenerate with npm run export-decisions
 data/generated/decisions.csv
+
+# Playwright browsers and web build output
+web/dist/
+test-results/

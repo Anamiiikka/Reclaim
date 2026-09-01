@@ -197,6 +197,15 @@ jobs:
         if: steps.check.outputs.present == 'true'
         run: npm test
 
+      - name: Dashboard builds
+        if: steps.check.outputs.present == 'true'
+        # A dashboard that does not build is not a deliverable.
+        run: |
+          cd web
+          npm ci
+          npx tsc --noEmit
+          npm run build
+
   # The guardrails are the project's central claim. This job states the result in
   # the run summary so it can be read without opening logs.
   guardrails:
