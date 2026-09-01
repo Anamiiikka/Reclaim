@@ -142,6 +142,8 @@ export interface ExecutionSummary {
   readonly claimed: number;
   readonly sent: number;
   readonly pendingRetry: number;
+  /** Rate-limited: requeued without consuming a retry. Not a failure. */
+  readonly deferred?: number;
   readonly escalated: number;
   readonly failed: number;
 }

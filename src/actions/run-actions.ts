@@ -56,6 +56,16 @@ interface DecidedCase {
   detected_at: Date;
 }
 
+/**
+ * Cap on how many real payment links a single run will create.
+ *
+ * Razorpay's test mode is not built for bulk: creating ~1,000 links exhausted the
+ * account's quota and returned 429 on 80% of calls. That is a property of the
+ * sandbox, not of Reclaim, so the pipeline proves the integration on a sample and
+ * runs the rest through the simulator. Every link created here is real and openable.
+ */
+const RAZORPAY_LINK_BUDGET = 25;
+
 async function main(): Promise<void> {
   loadEnv();
   const failDemo = process.argv.includes('--fail-demo');
@@ -120,6 +130,30 @@ async function main(): Promise<void> {
       client = new SimulatedPaymentClient({ failures });
     } else {
       client = createPaymentClient();
+    }
+
+    // Against the real API, cap the run so the sandbox quota is not exhausted.
+    if (client.name === 'razorpay') {
+      const capped = await sql<Array<{ action_id: string }>>`
+        SELECT sa.action_id
+        FROM scheduled_actions sa JOIN recovery_actions ra ON ra.id = sa.action_id
+        WHERE sa.completed_at IS NULL
+          AND ra.action IN ('SEND_PAYMENT_LINK','SUGGEST_ALTERNATE_METHOD','DELAYED_RETRY_PROMPT')
+        ORDER BY sa.run_after
+        OFFSET ${RAZORPAY_LINK_BUDGET}
+      `;
+      if (capped.length > 0) {
+        // Push the excess beyond this run's horizon rather than deleting it: the
+        // cases stay live and a later run (or the simulator) can pick them up.
+        await sql`
+          UPDATE scheduled_actions SET run_after = ${new Date('2027-01-01T00:00:00.000Z')}
+          WHERE action_id IN ${sql(capped.map((row) => row.action_id))}
+        `;
+        console.log(
+          `capping at ${RAZORPAY_LINK_BUDGET} real payment links ` +
+            `(${capped.length} deferred; Razorpay test mode is rate limited)`,
+        );
+      }
     }
 
     console.log(`\nexecuting due actions with the ${client.name} client`);

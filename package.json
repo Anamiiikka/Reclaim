@@ -16,7 +16,9 @@
     "verify-replay": "tsx src/decisions/verify-replay.ts",
     "actions": "tsx src/actions/run-actions.ts",
     "fail-demo": "tsx src/actions/run-actions.ts --fail-demo",
-    "check-razorpay": "tsx src/payments/check-connection.ts"
+    "check-razorpay": "tsx src/payments/check-connection.ts",
+    "probe-rate-limit": "tsx src/payments/probe-rate-limit.ts",
+    "verify-idempotency": "tsx src/payments/verify-idempotency.ts"
   },
   "devDependencies": {
     "@types/node": "24.10.1",

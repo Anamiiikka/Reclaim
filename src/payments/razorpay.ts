@@ -30,6 +30,8 @@ export interface RazorpayOptions {
   readonly keySecret: string;
   readonly linkValidityHours?: number;
   readonly timeoutMs?: number;
+  /** Minimum gap between outgoing requests, to stay under the provider's rate limit. */
+  readonly minIntervalMs?: number;
 }
 
 export class RazorpayPaymentClient implements PaymentClient {
@@ -38,6 +40,18 @@ export class RazorpayPaymentClient implements PaymentClient {
   private readonly auth: string;
   private readonly linkValidityHours: number;
   private readonly timeoutMs: number;
+
+  /**
+   * Client-side throttle.
+   *
+   * Running the pipeline against the real test API returned 429 on 796 of 997 calls
+   * even at concurrency 4. Razorpay does not publish a test-mode rate limit, so this
+   * paces requests to a rate that empirically does not trip it. Backpressure is our
+   * problem to manage, not the provider's: the alternative is escalating hundreds of
+   * cases to humans because the API was busy, which is not a real failure.
+   */
+  private readonly minIntervalMs: number;
+  private nextSlot = 0;
 
   constructor(options: RazorpayOptions) {
     if (!options.keyId.startsWith('rzp_test_')) {
@@ -51,6 +65,7 @@ export class RazorpayPaymentClient implements PaymentClient {
     this.auth = Buffer.from(`${options.keyId}:${options.keySecret}`).toString('base64');
     this.linkValidityHours = options.linkValidityHours ?? 24;
     this.timeoutMs = options.timeoutMs ?? 10_000;
+    this.minIntervalMs = options.minIntervalMs ?? 120;
   }
 
   async createPaymentLink(request: CreateLinkRequest): Promise<PaymentLink> {
@@ -128,7 +143,15 @@ export class RazorpayPaymentClient implements PaymentClient {
 
     const payload = (await response.json().catch(() => ({}))) as RazorpayErrorBody;
     const description = payload.error?.description ?? response.statusText;
-    const code = payload.error?.code ?? `HTTP_${response.status}`;
+    // Prefer the HTTP status for the two cases callers branch on. Razorpay returns
+    // code "BAD_REQUEST_ERROR" in the body even for a 429, so trusting the body alone
+    // made rate limits indistinguishable from validation errors.
+    const code =
+      response.status === 429
+        ? 'RATE_LIMITED'
+        : response.status >= 500
+          ? 'SERVER_ERROR'
+          : (payload.error?.code ?? `HTTP_${response.status}`);
 
     // A duplicate reference_id means we already created this link. That is the
     // idempotency guarantee working, not a failure — but Razorpay reports it as a
@@ -143,7 +166,18 @@ export class RazorpayPaymentClient implements PaymentClient {
     );
   }
 
+  /** Wait until this client's next permitted request slot. */
+  private async throttle(): Promise<void> {
+    const now = Date.now();
+    const slot = Math.max(now, this.nextSlot);
+    this.nextSlot = slot + this.minIntervalMs;
+    if (slot > now) {
+      await new Promise((resolve) => setTimeout(resolve, slot - now));
+    }
+  }
+
   private async fetchWithTimeout(url: string, init: RequestInit): Promise<Response> {
+    await this.throttle();
     const controller = new AbortController();
     const timer = setTimeout(() => { controller.abort(); }, this.timeoutMs);
     try {

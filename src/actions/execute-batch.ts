@@ -28,8 +28,18 @@ const CUSTOMER_FACING: ReadonlySet<ActionType> = new Set([
   'DELAYED_RETRY_PROMPT',
 ]);
 
-/** How many payment-API calls to have in flight at once. */
-const CONCURRENCY = 20;
+/**
+ * How many payment-API calls to have in flight at once.
+ *
+ * The simulator is in-process and can run wide. A real provider's shared test
+ * environment deserves restraint: hammering it with twenty parallel writes is both
+ * impolite and a good way to collect 429s halfway through a demo.
+ */
+const CONCURRENCY_BY_CLIENT: Readonly<Record<string, number>> = {
+  simulated: 20,
+  razorpay: 4,
+};
+const DEFAULT_CONCURRENCY = 4;
 
 interface ClaimedJob {
   job_id: string;
@@ -72,6 +82,7 @@ async function claimJobs(sql: Sql, now: Date, workerId: string, limit: number): 
 type Outcome =
   | { kind: 'sent'; job: ClaimedJob; link: PaymentLink | null }
   | { kind: 'retry'; job: ClaimedJob; message: string }
+  | { kind: 'deferred'; job: ClaimedJob; message: string }
   | { kind: 'escalate'; job: ClaimedJob; message: string };
 
 /** Resolve one job's outcome. Performs the API call but writes nothing. */
@@ -93,10 +104,19 @@ async function resolveJob(job: ClaimedJob, client: PaymentClient): Promise<Outco
     return { kind: 'sent', job, link };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    const retryable = error instanceof PaymentClientError && error.retryable;
+    const paymentError = error instanceof PaymentClientError ? error : null;
+
+    // Backpressure is not failure. A 429 says "later", not "this cannot be done", so
+    // it must not consume the retry budget or escalate to a human. Running against the
+    // real API returned 429 on 796 of 997 calls, and treating those as failures put
+    // 796 perfectly healthy cases in a human review queue.
+    if (paymentError?.code === 'RATE_LIMITED' || paymentError?.code === 'HTTP_429') {
+      return { kind: 'deferred', job, message };
+    }
+
     // One retry, then a human. Retrying further would burn the recovery window and
     // risk contacting the customer if an earlier call actually succeeded.
-    return retryable && job.attempt_count + 1 < 2
+    return paymentError?.retryable === true && job.attempt_count + 1 < 2
       ? { kind: 'retry', job, message }
       : { kind: 'escalate', job, message };
   }
@@ -132,10 +152,12 @@ export async function runDueActionsBatched(
     return { claimed: 0, sent: 0, pendingRetry: 0, escalated: 0, failed: 0 };
   }
 
-  const outcomes = await mapLimit(jobs, CONCURRENCY, (job) => resolveJob(job, client));
+  const concurrency = CONCURRENCY_BY_CLIENT[client.name] ?? DEFAULT_CONCURRENCY;
+  const outcomes = await mapLimit(jobs, concurrency, (job) => resolveJob(job, client));
 
   const sent = outcomes.filter((o): o is Extract<Outcome, { kind: 'sent' }> => o.kind === 'sent');
   const retries = outcomes.filter((o): o is Extract<Outcome, { kind: 'retry' }> => o.kind === 'retry');
+  const deferred = outcomes.filter((o): o is Extract<Outcome, { kind: 'deferred' }> => o.kind === 'deferred');
   const escalations = outcomes.filter((o): o is Extract<Outcome, { kind: 'escalate' }> => o.kind === 'escalate');
 
   const auditRows: Array<Record<string, unknown>> = [];
@@ -209,6 +231,16 @@ export async function runDueActionsBatched(
     }
   }
 
+  if (deferred.length > 0) {
+    // Put the job back on the queue untouched: no attempt consumed, no status change,
+    // no audit noise. The action was never sent, so there is nothing to explain yet.
+    await sql`
+      UPDATE scheduled_actions
+      SET locked_at = NULL, locked_by = NULL, run_after = ${new Date(now.getTime() + 60_000)}
+      WHERE action_id IN ${sql(deferred.map((o) => o.job.action_id))}
+    `;
+  }
+
   if (escalations.length > 0) {
     await sql`
       UPDATE recovery_actions ra
@@ -247,6 +279,7 @@ export async function runDueActionsBatched(
     claimed: jobs.length,
     sent: sent.length,
     pendingRetry: retries.length,
+    deferred: deferred.length,
     escalated: escalations.length,
     failed: escalations.length,
   };
