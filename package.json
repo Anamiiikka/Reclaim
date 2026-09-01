@@ -13,7 +13,10 @@
     "test:watch": "vitest",
     "guardrail-report": "vitest run tests/guardrails.test.ts --reporter=json --outputFile=evaluation/guardrail-report.json",
     "detect": "tsx src/decisions/run-detection.ts",
-    "verify-replay": "tsx src/decisions/verify-replay.ts"
+    "verify-replay": "tsx src/decisions/verify-replay.ts",
+    "actions": "tsx src/actions/run-actions.ts",
+    "fail-demo": "tsx src/actions/run-actions.ts --fail-demo",
+    "check-razorpay": "tsx src/payments/check-connection.ts"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
