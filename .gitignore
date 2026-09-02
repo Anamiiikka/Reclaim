@@ -49,3 +49,6 @@ data/generated/decisions.csv
 # Playwright browsers and web build output
 web/dist/
 test-results/
+
+# Intermediate HTML from docs/make-pdf.mjs
+docs/*.tmp.html

@@ -22,7 +22,8 @@
     "export-decisions": "tsx src/decisions/export-decisions.ts",
     "eval": "tsx src/decisions/export-decisions.ts && python evaluation/evaluate.py && python evaluation/render_report.py > evaluation/RESULTS.md",
     "api": "tsx src/api/server.ts",
-    "web": "cd web && npm run dev"
+    "web": "cd web && npm run dev",
+    "pdf": "node docs/make-pdf.mjs docs/PITCH.md docs/PITCH.pdf && node docs/make-pdf.mjs docs/DEPLOYMENT.md docs/DEPLOYMENT.pdf"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
