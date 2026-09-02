@@ -10,7 +10,7 @@
 
 import { createServer } from 'node:http';
 import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { extname, join, normalize, resolve } from 'node:path';
 
 import postgres from 'postgres';
 import type { Sql } from 'postgres';
@@ -157,11 +157,49 @@ function evaluationReport(): unknown {
   return JSON.parse(readFileSync(path, 'utf8'));
 }
 
+/**
+ * Serve the built dashboard alongside the API.
+ *
+ * One process rather than two makes deployment a single service, and removes the
+ * CORS and proxy configuration a split origin would need. In development the Vite
+ * dev server proxies /api here instead, so this path is unused locally.
+ */
+const WEB_DIST = resolve(process.cwd(), 'web', 'dist');
+
+const MIME: Readonly<Record<string, string>> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+};
+
+function serveStatic(pathname: string, response: import('node:http').ServerResponse): boolean {
+  if (!existsSync(WEB_DIST)) return false;
+
+  // normalize + prefix check: a request for ../../.env must not escape web/dist.
+  const requested = normalize(join(WEB_DIST, pathname === '/' ? 'index.html' : pathname));
+  const target = requested.startsWith(WEB_DIST) && existsSync(requested)
+    ? requested
+    : join(WEB_DIST, 'index.html');   // SPA fallback so #/case/... deep links work
+
+  if (!existsSync(target)) return false;
+
+  response.setHeader('Content-Type', MIME[extname(target)] ?? 'application/octet-stream');
+  response.writeHead(200);
+  response.end(readFileSync(target));
+  return true;
+}
+
 const server = createServer((request, response) => {
   const url = new URL(request.url ?? '/', `http://localhost:${PORT}`);
 
   response.setHeader('Access-Control-Allow-Origin', '*');
-  response.setHeader('Content-Type', 'application/json');
+  if (url.pathname.startsWith('/api/')) {
+    response.setHeader('Content-Type', 'application/json');
+  }
 
   const send = (status: number, body: unknown): void => {
     response.writeHead(status);
@@ -180,6 +218,9 @@ const server = createServer((request, response) => {
         return found ? send(200, found) : send(404, { error: 'no such case' });
       }
 
+      // Anything not under /api is the dashboard.
+      if (!url.pathname.startsWith('/api/') && serveStatic(url.pathname, response)) return;
+
       send(404, { error: 'not found' });
     } catch (error) {
       console.error(error);
@@ -189,6 +230,11 @@ const server = createServer((request, response) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Reclaim API on http://localhost:${PORT}`);
+  console.log(`Reclaim on http://localhost:${PORT}`);
   console.log('  /api/overview  /api/cases  /api/cases/:id  /api/evaluation');
+  console.log(
+    existsSync(WEB_DIST)
+      ? '  dashboard served from web/dist'
+      : '  dashboard not built — run: cd web && npm run build',
+  );
 });

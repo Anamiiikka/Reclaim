@@ -169,12 +169,16 @@ npm run verify-replay                 # every decision reproduces exactly
 npm run eval                          # regenerate the evaluation report
 ```
 
-Dashboard:
+Dashboard — one process serves both the API and the built dashboard:
 
 ```bash
-npx tsx src/api/server.ts     # API on :3000
-cd web && npm run dev         # dashboard on :5173
+cd web && npm run build && cd ..
+npm run api                   # http://localhost:3000
 ```
+
+For hot reload while developing the dashboard, run them separately
+(`npm run api` and `npm run web`; Vite proxies /api). Deployment steps are in
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ### Razorpay
 
